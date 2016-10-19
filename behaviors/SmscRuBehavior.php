@@ -2,17 +2,11 @@
 
 namespace blackice\smscru\behaviors;
 
-use blackice\liqpay\LiqPay;
 use yii;
 use yii\base\Behavior;
 
 class SmscRuBehavior extends Behavior
 {
-    public $attribute = 'amount';
-    public $order_idAttr = 'order_id';
-    public $amountAttr = 'total';
-    public $type = null;
-    public $callbackAction = 'callback';
 
     public function init()
     {
