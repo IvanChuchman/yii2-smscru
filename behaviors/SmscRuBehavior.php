@@ -13,7 +13,7 @@ class SmscRuBehavior extends Behavior
         parent::init();
     }
 
-    public static function send($data)
+    public static function sendSMS($data)
     {
         $config = Yii::$app->params['smsc'];
 
