@@ -17,29 +17,19 @@ class SmscRuBehavior extends Behavior
     public function init()
     {
         parent::init();
-
-        //Yii::$app->params['menu']
     }
 
-    public function getForm($button = '<button class="btn btn-success btn-sm">Pay invoice</button>')
+    public static function send($data)
     {
-        if ($this->owner->type == $this->type)
-        {
-            $liqpay = new LiqPay('i21394330880', 'Tlvw7N04QB3ltEeWsGBIx1gtguantkwHfviYRM0K');
+        $config = Yii::$app->params['smsc'];
 
-            return $liqpay->cnb_form([
-                'action'   => 'hold',
-                'version'  => '3',
-                'language' => 'en',
-                'currency' => 'UAH',
-                'sandbox'  => true,
-
-                'amount'      => $this->owner->{$this->amountAttr},
-                'description' => "Invoice #" . $this->owner->{$this->order_idAttr},
-                'order_id'    => $this->owner->{$this->order_idAttr},
-                'server_url'  => $_SERVER['HTTP_HOST'] . '/'.$this->owner->id.'/' . $this->callbackAction,
-                'button'      => $button
-            ]);
-        }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        //curl_setopt($ch, CURLOPT_URL, "http://smsc.ru/sys/send.php?flash=1&charset=utf-8&login=".$config['login']."&psw=".$config['password']."&phones=".urlencode($data['phone'])."&mes=".urlencode($data['message']));
+        curl_setopt($ch, CURLOPT_URL, "http://smsc.ru/sys/send.php?charset=utf-8&login=".$config['login']."&psw=".$config['password']."&phones=".urlencode($data['phone'])."&mes=".urlencode($data['message']));
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
     }
 }
