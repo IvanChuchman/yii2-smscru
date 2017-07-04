@@ -32,7 +32,7 @@ class SmscRuBehavior extends Behavior
         }
 
         else {
-            $code           = mt_rand(1,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
+            $code           = mt_rand(1,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
             $params['mes']  = urlencode(\Yii::t('smsc.ru', 'confirm_code_txt').': '.$code);
         }
 
