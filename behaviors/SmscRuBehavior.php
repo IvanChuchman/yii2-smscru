@@ -16,10 +16,12 @@ class SmscRuBehavior extends Behavior
     private static function confirmCode($phone)
     {
         $config = Yii::$app->params['smsc'];
+        $code   = mt_rand(1,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
+        if ($config['test']) return ['code' => $code];
 
         $params = [
+            'fmt'       => 3, // json
             'charset'   => $config['charset'],
-            'fmt'       => $config['fmt'],
             'login'     => $config['login'],
             'psw'       => $config['password'],
             'phones'    => urlencode($phone)
@@ -31,16 +33,12 @@ class SmscRuBehavior extends Behavior
             $params['mes']  = 'code';
         }
 
-        else {
-            $code           = mt_rand(1,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
+        else
             $params['mes']  = urlencode(\Yii::t('smsc.ru', 'confirm_code_txt').': '.$code);
-        }
-
-        $fields = http_build_query($params, '', '&');
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_URL, $config['url']."?".$fields);
+        curl_setopt($ch, CURLOPT_URL, $config['url']."?".http_build_query($params, '', '&'));
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
