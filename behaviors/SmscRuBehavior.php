@@ -24,21 +24,14 @@ class SmscRuBehavior extends Behavior
             'charset'   => $config['charset'],
             'login'     => $config['login'],
             'psw'       => $config['password'],
-            'phones'    => urlencode($phone)
+            'phones'    => urlencode($phone),
+            'call'      => ($config['call']) ? 1 : 0
         ];
-
-        if ($config['call'])
-        {
-            $params['call'] = 1;
-            $params['mes']  = 'code';
-        }
-
-        else
-            $params['mes']  = urlencode(\Yii::t('smsc.ru', 'confirm_code_txt').': '.$code);
+        $message  = ($config['call']) ?  'code' : urlencode(\Yii::t('smsc.ru', 'confirm_code_txt').': '.$code);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_URL, $config['url']."?".http_build_query($params, '', '&'));
+        curl_setopt($ch, CURLOPT_URL, $config['url']."?".http_build_query($params, '', '&')."&mes=".$message);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
