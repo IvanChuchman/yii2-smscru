@@ -19,15 +19,18 @@ class SmscRuBehavior extends Behavior
         $code   = mt_rand(1,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
         if ($config['test']) return ['code' => substr($code, (-1 * $config['digits']))];
 
+        $operator = substr($phone, 0, 5);
+        $configCall = ( $config['call'] && !in_array($operator, ['38063', '38073', '38093']) ) ? true : false;
+
         $params = [
             'fmt'       => 3, // json
             'charset'   => $config['charset'],
             'login'     => $config['login'],
             'psw'       => $config['password'],
             'phones'    => urlencode($phone),
-            'call'      => ($config['call']) ? 1 : 0
+            'call'      => ($configCall) ? 1 : 0
         ];
-        $message  = ($config['call']) ?  'code' : urlencode(\Yii::t('smsc.ru', 'confirm_code_txt').': '.$code);
+        $message  = ($configCall) ?  'code' : urlencode(\Yii::t('smsc.ru', 'confirm_code_txt').': '.$code);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -38,7 +41,7 @@ class SmscRuBehavior extends Behavior
         curl_close($ch);
 
         $result         = json_decode($result, true);
-        $result['code'] = ($config['call']) ? $result['code'] : $code;
+        $result['code'] = ($configCall) ? $result['code'] : $code;
         $result['code'] = substr($result['code'], (-1 * $config['digits']));
 
         return $result;
