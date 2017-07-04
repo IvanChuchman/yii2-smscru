@@ -17,7 +17,7 @@ class SmscRuBehavior extends Behavior
     {
         $config = Yii::$app->params['smsc'];
         $code   = mt_rand(1,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
-        if ($config['test']) return ['code' => $code];
+        if ($config['test']) return ['code' => substr($code, (-1 * $config['digits']))];
 
         $params = [
             'fmt'       => 3, // json
@@ -39,6 +39,7 @@ class SmscRuBehavior extends Behavior
 
         $result         = json_decode($result, true);
         $result['code'] = ($config['call']) ? $result['code'] : $code;
+        $result['code'] = substr($result['code'], (-1 * $config['digits']));
 
         return $result;
     }
