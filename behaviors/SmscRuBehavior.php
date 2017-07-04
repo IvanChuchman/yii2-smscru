@@ -13,7 +13,7 @@ class SmscRuBehavior extends Behavior
         parent::init();
     }
 
-    private static function confirmCode($phone)
+    public static function confirmCode($phone)
     {
         $config = Yii::$app->params['smsc'];
         $code   = mt_rand(1,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
