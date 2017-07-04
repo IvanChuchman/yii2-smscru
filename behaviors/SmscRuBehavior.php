@@ -31,7 +31,7 @@ class SmscRuBehavior extends Behavior
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_URL, $config['url']."?".http_build_query($params, '', '&')."&mes=".$message);
+        curl_setopt($ch, CURLOPT_URL, $config['url']."?".http_build_query($params, '', '&')."&mes=".$message.'&param='.$config['param']);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
